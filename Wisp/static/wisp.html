@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wisp</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-primary: #fef7f7;
+            --bg-secondary: #ffeef0;
+            --accent-primary: #ff9bb5;
+            --accent-secondary: #ffb8c8;
+            --text-primary: #2d1b3d;
+            --text-secondary: #6b4c7a;
+            --button-bg: rgba(255, 255, 255, 0.5);
+            --button-border: rgba(255, 155, 181, 0.3);
+            --button-hover: rgba(255, 155, 181, 0.1);
+        }
+
+        .theme-bubblegum {
+            --bg-primary: #ffe8ed;
+            --bg-secondary: #ffcdd8;
+            --accent-primary: #ff6b8a;
+            --accent-secondary: #ff8da1;
+            --text-primary: #2d1b3d;
+            --text-secondary: #6b4c7a;
+            --button-bg: rgba(255, 255, 255, 0.6);
+            --button-border: rgba(255, 107, 138, 0.4);
+            --button-hover: rgba(255, 107, 138, 0.15);
+        }
+
+        .theme-lavender {
+            --bg-primary: #f0ebff;
+            --bg-secondary: #e4d9ff;
+            --accent-primary: #9370db;
+            --accent-secondary: #b19cd9;
+            --text-primary: #2a1f3d;
+            --text-secondary: #5a4b7a;
+            --button-bg: rgba(255, 255, 255, 0.7);
+            --button-border: rgba(147, 112, 219, 0.4);
+            --button-hover: rgba(147, 112, 219, 0.15);
+        }
+
+        .theme-mint {
+            --bg-primary: #e8fff2;
+            --bg-secondary: #d1ffdf;
+            --accent-primary: #4ade80;
+            --accent-secondary: #6ee7b7;
+            --text-primary: #1f3d2a;
+            --text-secondary: #4b7a5a;
+            --button-bg: rgba(255, 255, 255, 0.7);
+            --button-border: rgba(74, 222, 128, 0.4);
+            --button-hover: rgba(74, 222, 128, 0.15);
+        }
+
+        .theme-peach {
+            --bg-primary: #fff4e8;
+            --bg-secondary: #ffe8d1;
+            --accent-primary: #fb923c;
+            --accent-secondary: #fdba74;
+            --text-primary: #3d2a1f;
+            --text-secondary: #7a5a4b;
+            --button-bg: rgba(255, 255, 255, 0.7);
+            --button-border: rgba(251, 146, 60, 0.4);
+            --button-hover: rgba(251, 146, 60, 0.15);
+        }
+
+        .theme-dark-rose {
+            --bg-primary: #1f0f14;
+            --bg-secondary: #2d1419;
+            --accent-primary: #ff6b8a;
+            --accent-secondary: #ff8da1;
+            --text-primary: #f8e8ed;
+            --text-secondary: #d4a5b3;
+            --button-bg: rgba(255, 255, 255, 0.05);
+            --button-border: rgba(255, 107, 138, 0.3);
+            --button-hover: rgba(255, 107, 138, 0.1);
+        }
+
+        .theme-dark-purple {
+            --bg-primary: #14101f;
+            --bg-secondary: #1a142d;
+            --accent-primary: #a855f7;
+            --accent-secondary: #c084fc;
+            --text-primary: #f0ebff;
+            --text-secondary: #c4b5fd;
+            --button-bg: rgba(255, 255, 255, 0.05);
+            --button-border: rgba(168, 85, 247, 0.3);
+            --button-hover: rgba(168, 85, 247, 0.1);
+        }
+
+        .theme-dark-forest {
+            --bg-primary: #0f1f14;
+            --bg-secondary: #14261a;
+            --accent-primary: #22c55e;
+            --accent-secondary: #4ade80;
+            --text-primary: #e8fff2;
+            --text-secondary: #a3d9b1;
+            --button-bg: rgba(255, 255, 255, 0.05);
+            --button-border: rgba(34, 197, 94, 0.3);
+            --button-hover: rgba(34, 197, 94, 0.1);
+        }
+
+        .theme-dark-amber {
+            --bg-primary: #1f1408;
+            --bg-secondary: #2d1f0f;
+            --accent-primary: #f59e0b;
+            --accent-secondary: #fbbf24;
+            --text-primary: #fff4e8;
+            --text-secondary: #fed7aa;
+            --button-bg: rgba(255, 255, 255, 0.05);
+            --button-border: rgba(245, 158, 11, 0.3);
+            --button-hover: rgba(245, 158, 11, 0.1);
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            color: var(--text-primary);
+            overflow-x: hidden;
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .theme-selector {
+            position: fixed;
+            top: 2rem;
+            right: 2rem;
+            display: flex;
+            gap: 0.5rem;
+            z-index: 100;
+            opacity: 0;
+            animation: fadeIn 0.5s ease-out 1.2s forwards;
+        }
+
+        .dark-theme-selector {
+            position: fixed;
+            top: 2rem;
+            left: 2rem;
+            display: flex;
+            gap: 0.5rem;
+            z-index: 100;
+            opacity: 0;
+            animation: fadeIn 0.5s ease-out 1.4s forwards;
+        }
+
+        .theme-dot {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 2px solid rgba(255, 255, 255, 0.8);
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .theme-dot:hover {
+            transform: scale(1.1);
+            border-color: rgba(255, 255, 255, 1);
+        }
+
+        .theme-dot.active {
+            transform: scale(1.2);
+            border-color: rgba(255, 255, 255, 1);
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .theme-bubblegum-dot {
+            background: linear-gradient(135deg, #ff9bb5, #ffb8c8);
+        }
+
+        .theme-lavender-dot {
+            background: linear-gradient(135deg, #b19cd9, #c8b9e6);
+        }
+
+        .theme-mint-dot {
+            background: linear-gradient(135deg, #7dd3a0, #9de6b8);
+        }
+
+        .theme-peach-dot {
+            background: linear-gradient(135deg, #fb923c, #fdba74);
+        }
+
+        .theme-dark-rose-dot {
+            background: linear-gradient(135deg, #1f0f14, #ff6b8a);
+            border-color: rgba(255, 107, 138, 0.5);
+        }
+
+        .theme-dark-purple-dot {
+            background: linear-gradient(135deg, #14101f, #a855f7);
+            border-color: rgba(168, 85, 247, 0.5);
+        }
+
+        .theme-dark-forest-dot {
+            background: linear-gradient(135deg, #0f1f14, #22c55e);
+            border-color: rgba(34, 197, 94, 0.5);
+        }
+
+        .theme-dark-amber-dot {
+            background: linear-gradient(135deg, #1f1408, #f59e0b);
+            border-color: rgba(245, 158, 11, 0.5);
+        }
+
+        .container {
+            max-width: 600px;
+            width: 100%;
+            text-align: center;
+            position: relative;
+        }
+
+        .question {
+            font-size: clamp(1.8rem, 4vw, 2.8rem);
+            font-weight: 400;
+            line-height: 1.2;
+            margin-bottom: 3rem;
+            color: var(--text-primary);
+            letter-spacing: -0.03em;
+            opacity: 0;
+            animation: fadeInUp 0.8s ease-out 0.2s forwards;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            margin-bottom: 4rem;
+        }
+
+        @media (min-width: 640px) {
+            .options {
+                flex-direction: row;
+                gap: 1rem;
+            }
+        }
+
+        .option {
+            flex: 1;
+            padding: 0.9rem 1.8rem;
+            background: var(--button-bg);
+            border: 1px solid var(--button-border);
+            border-radius: 25px;
+            font-size: 1rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            backdrop-filter: blur(20px);
+            position: relative;
+            overflow: hidden;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        .option:nth-child(1) {
+            animation: fadeInUp 0.6s ease-out 0.4s forwards;
+        }
+
+        .option:nth-child(2) {
+            animation: fadeInUp 0.6s ease-out 0.5s forwards;
+        }
+
+        .option:hover {
+            transform: translateY(-1px);
+            background: var(--button-hover);
+            border-color: var(--accent-primary);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            color: var(--text-primary);
+        }
+
+        .option:active {
+            transform: translateY(0);
+        }
+
+        .option.selected {
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            color: white;
+            border-color: var(--accent-primary);
+            transform: scale(1.01);
+            box-shadow: 0 6px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .results {
+            display: none;
+            opacity: 0;
+        }
+
+        .results.show {
+            display: block;
+            animation: fadeIn 0.5s ease-out forwards;
+        }
+
+        .result-option {
+            display: flex;
+            flex-direction: column;
+            padding: 1rem 1.2rem;
+            margin-bottom: 0.8rem;
+            background: var(--button-bg);
+            border-radius: 16px;
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--button-border);
+        }
+
+        .result-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.6rem;
+        }
+
+        .result-text {
+            font-weight: 500;
+            color: var(--text-primary);
+            font-size: 0.95rem;
+        }
+
+        .result-percentage {
+            font-weight: 600;
+            color: var(--accent-primary);
+            font-size: 1rem;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: rgba(0, 0, 0, 0.08);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
+            border-radius: 3px;
+            transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
+            width: 0%;
+        }
+
+        .next-poll {
+            display: none;
+            padding: 0.7rem 1.6rem;
+            background: var(--button-bg);
+            border: 1px solid var(--button-border);
+            border-radius: 20px;
+            color: var(--text-secondary);
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 2rem;
+            opacity: 0;
+            backdrop-filter: blur(20px);
+            font-size: 0.9rem;
+        }
+
+        .next-poll.show {
+            display: inline-block;
+            animation: fadeInUp 0.5s ease-out 0.8s forwards;
+        }
+
+        .next-poll:hover {
+            background: var(--button-hover);
+            border-color: var(--accent-primary);
+            color: var(--text-primary);
+            transform: translateY(-1px);
+        }
+
+        .footer {
+            position: fixed;
+            bottom: 2rem;
+            left: 2rem;
+            opacity: 0;
+            animation: fadeIn 0.5s ease-out 1s forwards;
+        }
+
+        .create-link {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: 15px;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .create-link:hover {
+            color: var(--accent-primary);
+            background: var(--button-hover);
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        .particle {
+            position: absolute;
+            width: 3px;
+            height: 3px;
+            background: linear-gradient(45deg, var(--accent-primary), var(--accent-secondary));
+            border-radius: 50%;
+            pointer-events: none;
+            animation: particle-float 2s ease-out forwards;
+        }
+
+        @keyframes particle-float {
+            0% {
+                transform: translate(0, 0) scale(1);
+                opacity: 1;
+            }
+            100% {
+                transform: translate(var(--random-x, 0), var(--random-y, -80px)) scale(0);
+                opacity: 0;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .theme-selector,
+            .dark-theme-selector {
+                top: 1rem;
+            }
+            
+            .theme-selector {
+                right: 1rem;
+            }
+            
+            .dark-theme-selector {
+                left: 1rem;
+            }
+            
+            .footer {
+                bottom: 1rem;
+                left: 1rem;
+            }
+            
+            .question {
+                margin-bottom: 2.5rem;
+                font-size: clamp(1.5rem, 5vw, 2.2rem);
+            }
+            
+            .options {
+                margin-bottom: 3rem;
+            }
+        }
+    </style>
+</head>
+<body class="theme-bubblegum">
+    <div class="dark-theme-selector">
+        <div class="theme-dot theme-dark-rose-dot" data-theme="dark-rose"></div>
+        <div class="theme-dot theme-dark-purple-dot" data-theme="dark-purple"></div>
+        <div class="theme-dot theme-dark-forest-dot" data-theme="dark-forest"></div>
+        <div class="theme-dot theme-dark-amber-dot" data-theme="dark-amber"></div>
+    </div>
+
+    <div class="theme-selector">
+        <div class="theme-dot theme-bubblegum-dot active" data-theme="bubblegum"></div>
+        <div class="theme-dot theme-lavender-dot" data-theme="lavender"></div>
+        <div class="theme-dot theme-mint-dot" data-theme="mint"></div>
+        <div class="theme-dot theme-peach-dot" data-theme="peach"></div>
+    </div>
+
+    <div class="container">
+        <div id="poll-view">
+            <h1 class="question">Would you rather have the ability to fly or be invisible?</h1>
+            <div class="options">
+                <button class="option" data-option="fly">Ability to fly</button>
+                <button class="option" data-option="invisible">Be invisible</button>
+            </div>
+        </div>
+
+        <div id="results-view" class="results">
+            <div class="result-option">
+                <div class="result-header">
+                    <span class="result-text">Ability to fly</span>
+                    <span class="result-percentage" id="fly-percentage">0%</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="fly-progress"></div>
+                </div>
+            </div>
+            <div class="result-option">
+                <div class="result-header">
+                    <span class="result-text">Be invisible</span>
+                    <span class="result-percentage" id="invisible-percentage">0%</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="invisible-progress"></div>
+                </div>
+            </div>
+            <button class="next-poll" id="next-poll">Next poll</button>
+        </div>
+    </div>
+
+    <div class="footer">
+        <a href="#" class="create-link" id="create-own">Create your own</a>
+    </div>
+
+    <script>
+        let currentPollId = "";
+        let hasVoted = false;
+        let currentTheme = 'bubblegum';
+
+        function setTheme(theme) {
+            if (currentTheme === theme) return;
+
+            document.body.classList.replace(`theme-${currentTheme}`, `theme-${theme}`);
+            currentTheme = theme;
+
+            document.querySelectorAll('.theme-dot').forEach(dot => dot.classList.remove('active'));
+            document.querySelector(`[data-theme="${theme}"]`).classList.add('active');
+        }
+
+        function createParticles(element) {
+            for (let i = 0; i < 8; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * element.offsetWidth + 'px';
+                particle.style.top = Math.random() * element.offsetHeight + 'px';
+                particle.style.setProperty('--random-x', (Math.random() - 0.5) * 150 + 'px');
+                particle.style.setProperty('--random-y', -(Math.random() * 100 + 40) + 'px');
+                element.appendChild(particle);
+                setTimeout(() => particle.remove(), 2000);
+            }
+        }
+
+        async function loadPoll() {
+            const res = await fetch('/api/poll/random');
+            const data = await res.json();
+            currentPollId = data.poll_id;
+            hasVoted = false;
+
+            document.querySelector('.question').textContent = data.question;
+
+            const options = document.querySelectorAll('.option');
+            options[0].textContent = data.a;
+            options[1].textContent = data.b;
+            options[0].setAttribute('data-option', 'a');
+            options[1].setAttribute('data-option', 'b');
+
+            document.querySelectorAll('.result-text')[0].textContent = data.a;
+            document.querySelectorAll('.result-text')[1].textContent = data.b;
+
+            options.forEach(opt => opt.classList.remove('selected'));
+            document.getElementById('results-view').classList.remove('show');
+            document.getElementById('next-poll').classList.remove('show');
+            document.getElementById('poll-view').style.display = 'block';
+            document.getElementById('poll-view').style.opacity = '1';
+            document.getElementById('poll-view').style.transform = 'translateY(0)';
+        }
+
+        async function vote(option) {
+            if (hasVoted || !currentPollId) return;
+            hasVoted = true;
+
+            await fetch(`/api/poll/${currentPollId}/vote`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ option })
+            });
+
+            const res = await fetch(`/api/poll/${currentPollId}`);
+            const data = await res.json();
+            const total = data.votes.a + data.votes.b;
+            const aPercent = total ? Math.round((data.votes.a / total) * 100) : 0;
+            const bPercent = total ? 100 - aPercent : 0;
+
+            document.getElementById('fly-percentage').textContent = aPercent + '%';
+            document.getElementById('invisible-percentage').textContent = bPercent + '%';
+            document.getElementById('fly-progress').style.width = aPercent + '%';
+            document.getElementById('invisible-progress').style.width = bPercent + '%';
+
+            const selectedButton = document.querySelector(`[data-option="${option}"]`);
+            selectedButton.classList.add('selected');
+            createParticles(selectedButton);
+
+            setTimeout(() => {
+                document.getElementById('poll-view').style.opacity = '0';
+                document.getElementById('poll-view').style.transform = 'translateY(-20px)';
+                setTimeout(() => {
+                    document.getElementById('poll-view').style.display = 'none';
+                    document.getElementById('results-view').classList.add('show');
+                    document.getElementById('next-poll').classList.add('show');
+                }, 300);
+            }, 800);
+        }
+
+        // Event bindings
+        document.querySelectorAll('.option').forEach(button => {
+            button.addEventListener('click', (e) => vote(e.target.getAttribute('data-option')));
+        });
+
+        document.getElementById('next-poll').addEventListener('click', loadPoll);
+        document.getElementById('create-own').addEventListener('click', e => {
+            e.preventDefault();
+            alert("Coming soon!");
+        });
+
+        document.querySelectorAll('.theme-dot').forEach(dot => {
+            dot.addEventListener('click', e => setTheme(e.target.getAttribute('data-theme')));
+        });
+
+        // Load first poll
+        window.addEventListener('DOMContentLoaded', loadPoll);
+    </script>
+
+</body>
+</html>
